@@ -131,7 +131,20 @@ public class InstallCert {
         }
 
         System.out.println("Enter certificate to add to trusted keystore or 'q' to quit: [1]");
-        String line = reader.readLine().trim();
+	
+	// this change is made to use the only one self-signed certificate by default
+	// when building a docker image
+        String line;
+        try {
+            line = reader.readLine().trim();
+        } catch (Exception e) {
+            if (chain.length > 0) {
+                line = "1";
+            } else {
+                throw e;
+            }
+        }
+	    
         int k;
         try {
             k = (line.length() == 0) ? 0 : Integer.parseInt(line) - 1;
